@@ -1,11 +1,10 @@
-"use client"
-
+// Rename threadsBanner to ThreadsBanner
 import useWindow from '@/hooks/use-window'
 import React from 'react'
 import { Icons } from '@/components/icons'
 import Image from 'next/image'
 
-export default function threadsBanner() {
+export default function ThreadsBanner() {
     const { isMobile } = useWindow()
     return (
         <header className="max-w-screen-md  md:max-w-screen-2xl lg:max-w-[1800px] mx-auto">
@@ -29,4 +28,3 @@ export default function threadsBanner() {
         </header>
     )
 }
-
