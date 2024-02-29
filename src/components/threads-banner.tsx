@@ -1,4 +1,6 @@
 // Rename threadsBanner to ThreadsBanner
+"use client"
+
 import useWindow from '@/hooks/use-window'
 import React from 'react'
 import { Icons } from '@/components/icons'
