@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react";
 
 type WindowSize = {
@@ -25,14 +27,11 @@ export default function useWindow(): WindowDimensions {
             });
         };
 
-        // Execute only on the client-side
-        if (typeof window !== "undefined") {
-            window.addEventListener("resize", handleResize);
-            handleResize();
+        window.addEventListener("resize", handleResize);
+        handleResize();
 
-            return () => window.removeEventListener("resize", handleResize);
-        }
-    }, []); // Empty dependency array ensures this effect runs only once after component mount
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     const isMobile: boolean = typeof windowSize.width === "number" && windowSize.width < 768;
     const isDesktop: boolean = typeof windowSize.width === "number" && windowSize.width >= 768;
