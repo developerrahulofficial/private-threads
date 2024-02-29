@@ -1,3 +1,5 @@
+'use client' // 👈 use it here
+
 import { useState, useEffect } from "react";
 
 type WindowSize = {
