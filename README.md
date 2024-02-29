@@ -1,4 +1,4 @@
-# [threads clone](https://threads.codebustar.com)
+# [Private threads](https://threads.codebustar.com)
 
 This is an open source **threads-clone** build with ***`create-t3-app`*** and  everything new in Next.js 13 and 14.
 
