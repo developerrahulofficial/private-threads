@@ -1,5 +1,3 @@
-'use client' // 👈 use it here
-
 import { useState, useEffect } from "react";
 
 type WindowSize = {
@@ -27,11 +25,14 @@ export default function useWindow(): WindowDimensions {
             });
         };
 
-        window.addEventListener("resize", handleResize);
-        handleResize();
+        // Execute only on the client-side
+        if (typeof window !== "undefined") {
+            window.addEventListener("resize", handleResize);
+            handleResize();
 
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+            return () => window.removeEventListener("resize", handleResize);
+        }
+    }, []); // Empty dependency array ensures this effect runs only once after component mount
 
     const isMobile: boolean = typeof windowSize.width === "number" && windowSize.width < 768;
     const isDesktop: boolean = typeof windowSize.width === "number" && windowSize.width >= 768;
