@@ -1,0 +1,134 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+model User {
+    id                    String         @id
+    createdAt             DateTime       @default(now()) @map(name: "created_at")
+    updatedAt             DateTime       @default(now()) @map(name: "updated_at")
+    username              String         @unique
+    fullname              String?
+    image                 String?
+    bio                   String?
+    link                  String?
+    email                 String         @unique
+    verified              Boolean?       @default(false)
+    privacy               Privacy        @default(PUBLIC)
+    followers             User[]         @relation(name: "followers")
+    following             User[]         @relation(name: "followers")
+    posts                 Post[]
+    likedPosts            Like[]
+    isAdmin               Boolean?       @default(false) @map(name: "is_admin")
+    reposts               Repost[]
+    reports               Report[]
+    senderNotifications   Notification[] @relation("sender")
+    receiverNotifications Notification[] @relation("receiver")
+
+    @@unique([createdAt, id])
+}
+
+enum Privacy {
+    PUBLIC
+    PRIVATE
+}
+
+model Post {
+    id           String         @id @default(cuid())
+    createdAt    DateTime       @default(now())
+    author       User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    authorId     String
+    text         String
+    images       String[]
+    likes        Like[]
+    parentPostId String?
+    parentPost   Post?          @relation("rootPost", fields: [parentPostId], references: [id], onDelete: Cascade)
+    replies      Post[]         @relation("rootPost")
+    notification Notification[]
+    reposts      Repost[]
+    quoteId      String?
+    privacy      PostPrivacy    @default(ANYONE)
+    reports      Report[]
+
+    @@unique([createdAt, id])
+    @@index([authorId])
+}
+
+model Like {
+    createdAt DateTime @default(now())
+    post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId    String
+
+    @@id([postId, userId])
+    @@index([userId])
+    @@index([postId])
+}
+
+model Repost {
+    createdAt DateTime @default(now())
+    post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId    String
+
+    @@id([postId, userId])
+    @@index([userId])
+}
+
+model Notification {
+    id        String           @id @default(cuid())
+    createdAt DateTime         @default(now())
+    read      Boolean          @default(false)
+    type      NotificationType
+    message   String
+    isPublic  Boolean          @default(false)
+
+    senderUserId   String
+    receiverUserId String?
+    senderUser     User    @relation("sender", fields: [senderUserId], references: [id], onDelete: Cascade)
+    receiverUser   User?   @relation("receiver", fields: [receiverUserId], references: [id], onDelete: Cascade)
+
+    postId String?
+    post   Post?   @relation(fields: [postId], references: [id])
+
+    @@index([receiverUserId])
+}
+
+enum NotificationType {
+    ADMIN
+    LIKE
+    REPLY
+    FOLLOW
+    REPOST
+    QUOTE
+}
+
+enum PostPrivacy {
+    FOLLOWED
+    ANYONE
+    MENTIONED
+}
+
+model Report {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    reason    String
+    post      Post?    @relation(fields: [postId], references: [id])
+    postId    String?
+    user      User?    @relation(fields: [userId], references: [id])
+    userId    String?
+}
+
+
+model Thread {
+    id        String  @id @default(cuid())
+    threadId  String
+    userId    String
+}
