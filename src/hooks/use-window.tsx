@@ -13,8 +13,8 @@ type WindowDimensions = {
 
 export default function useWindow(): WindowDimensions {
     const [windowSize, setWindowSize] = useState<WindowSize>({
-        width: typeof window !== "undefined" ? window.innerWidth : undefined,
-        height: typeof window !== "undefined" ? window.innerHeight : undefined,
+        width: undefined,
+        height: undefined,
     });
 
     useEffect(() => {
@@ -25,12 +25,10 @@ export default function useWindow(): WindowDimensions {
             });
         };
 
-        if (typeof window !== "undefined") {
-            window.addEventListener("resize", handleResize);
-            handleResize();
+        window.addEventListener("resize", handleResize);
+        handleResize();
 
-            return () => window.removeEventListener("resize", handleResize);
-        }
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     const isMobile: boolean = typeof windowSize.width === "number" && windowSize.width < 768;
