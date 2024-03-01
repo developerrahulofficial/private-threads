@@ -36,7 +36,7 @@
     "@trpc/next": "^10.45.0",
     "@trpc/react-query": "^10.45.0",
     "@trpc/server": "^10.45.0",
-    "@uploadthing/react": "^5.7.0",
+    "@uploadthing/react": "^6.3.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "date-fns": "^2.30.0",
